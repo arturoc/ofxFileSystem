@@ -1,0 +1,2 @@
+this is a test file
+it's used to test ofxFile text files
