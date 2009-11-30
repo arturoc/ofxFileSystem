@@ -16,7 +16,7 @@ public:
 	ofxDir();
 	virtual ~ofxDir();
 
-	bool open(string path);
+	bool open(string path, bool create=false);
 	void close();
 
 	int getNumDirs();

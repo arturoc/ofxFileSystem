@@ -41,7 +41,7 @@ ofxDir::~ofxDir() {
 	// TODO Auto-generated destructor stub
 }
 
-bool ofxDir::open(string directory){
+bool ofxDir::open(string directory, bool create){
 	directory = ofToDataPath(directory,true);
 
 	files.clear();
@@ -63,8 +63,10 @@ bool ofxDir::open(string directory){
 
 	if(dir == NULL){
 		//try to create it
-		mkdir(directory.c_str(),S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-		dir = opendir(directory.c_str());
+		if(create){
+			mkdir(directory.c_str(),S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+			dir = opendir(directory.c_str());
+		}
 		if(dir==NULL){
 			ofLog(OF_LOG_ERROR, "ofxDir - error opening directory");
 			return false;
@@ -166,7 +168,7 @@ ofxFile ofxDir::getFile(int num){
 
 ofxFile ofxDir::getFile(const string & name){
 	ofxFile file;
-	file.openReadOnly(path + name);
+	if(!file.openReadOnly(path + name)) ofLog(OF_LOG_ERROR, "cannot open " + path + name);;
 	return file;
 }
 
@@ -187,7 +189,7 @@ ofxDir ofxDir::getDir(int num){
 
 ofxDir ofxDir::getDir(const string & name){
 	ofxDir dir;
-	dir.open(path + name);
+	if(!dir.open(path + name)) ofLog(OF_LOG_ERROR, "cannot open " + path + name);
 	return dir;
 }
 
@@ -261,7 +263,8 @@ bool ofxDir::copyTo(string path){
 	if( path[path.length()-1] != '/'){
 		path = path + "/";
 	}
-	if(mkdir(path.c_str(),S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH )==-1){
+	ofxDir dst;
+	if(!dst.open(path,true)){
 		ofLog(OF_LOG_ERROR, "cannot create directory " + path);
 		return false;
 	}
