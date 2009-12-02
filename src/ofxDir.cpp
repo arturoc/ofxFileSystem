@@ -2,7 +2,7 @@
  * ofxDir.cpp
  *
  *  Created on: 29/11/2009
- *      Author: reactable
+ *      Author: arturo castro
  */
 
 #include "ofxDir.h"
